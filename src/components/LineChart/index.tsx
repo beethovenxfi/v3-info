@@ -54,7 +54,7 @@ const LineChart = ({
     const theme = useTheme();
     const textColor = theme.text2;
 
-    // chart pointer
+    // Chart pointer
     const chartRef = useRef<HTMLDivElement>(null);
     const [chartCreated, setChart] = useState<IChartApi | undefined>();
     const dataPrev = usePrevious(data);
@@ -88,7 +88,7 @@ const LineChart = ({
         return () => window.removeEventListener('resize', handleResize);
     }, [isClient, chartRef, handleResize]); // Empty array ensures that effect is only run on mount and unmount
 
-    // if chart not instantiated in canvas, create it
+    // if Chart not instantiated in canvas, create it
     useEffect(() => {
         if (!chartCreated && data && !!chartRef?.current?.parentElement) {
             const chart = createChart(chartRef.current, {
@@ -161,7 +161,7 @@ const LineChart = ({
                 },
             });
 
-            // update the title when hovering on the chart
+            // update the title when hovering on the Chart
             chartCreated.subscribeCrosshairMove(function (param) {
                 if (
                     chartRef?.current &&
@@ -191,7 +191,7 @@ const LineChart = ({
                 {topLeft ?? null}
                 {topRight ?? null}
             </RowBetween>
-            <div ref={chartRef} id={'line-chart'} {...rest} />
+            <div ref={chartRef} id={'line-Chart'} {...rest} />
             <RowBetween>
                 {bottomLeft ?? null}
                 {bottomRight ?? null}

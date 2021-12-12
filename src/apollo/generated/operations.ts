@@ -32,6 +32,14 @@ export const User = gql`
         }
     }
 `;
+export const BalancerChartTokenPrice = gql`
+    fragment BalancerChartTokenPrice on TokenPrice {
+        id
+        timestamp
+        priceUSD
+        amount
+    }
+`;
 export const BalancerTokenPrice = gql`
     fragment BalancerTokenPrice on TokenPrice {
         id
@@ -436,6 +444,95 @@ export const BalancerTokenPrices = gql`
         }
     }
     ${BalancerTokenPrice}
+`;
+export const BalancerChartTokenPrices = gql`
+    query BalancerChartTokenPrices($asset: Bytes!) {
+        prices1: tokenPrices(skip: 0, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
+            ...BalancerChartTokenPrice
+        }
+        prices2: tokenPrices(
+            skip: 1000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices3: tokenPrices(
+            skip: 2000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices4: tokenPrices(
+            skip: 3000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices5: tokenPrices(
+            skip: 4000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices6: tokenPrices(
+            skip: 5000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices7: tokenPrices(
+            skip: 6000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices8: tokenPrices(
+            skip: 7000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices9: tokenPrices(
+            skip: 8000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices10: tokenPrices(
+            skip: 9000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+    }
+    ${BalancerChartTokenPrice}
 `;
 export const GetBalancerPools = gql`
     query GetBalancerPools(

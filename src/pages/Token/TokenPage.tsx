@@ -36,6 +36,8 @@ import { useBalancerTokenData, useBalancerTokenPageData } from '../../data/balan
 import { useBalancerPoolsForToken } from '../../data/balancer/usePools';
 import { useBalancerTransactionData } from '../../data/balancer/useTransactions';
 import { BALANCER_APP_LINK } from '../../data/balancer/constants';
+import { useBalancerToken } from '../../data/balancer/useToken';
+import { TokenPriceChart } from '../../components/Chart/TokenPriceChart';
 
 const PriceText = styled(TYPE.label)`
     font-size: 36px;
@@ -104,14 +106,16 @@ export default function TokenPage({
     );
     const { tvlData, volumeData, priceData } = useBalancerTokenPageData(address);
 
-    // chart labels
-    const [view, setView] = useState(ChartView.VOL);
+    // Chart labels
+    const [view, setView] = useState(ChartView.PRICE);
     const [latestValue, setLatestValue] = useState<number | undefined>();
     const [valueLabel, setValueLabel] = useState<string | undefined>();
     const [timeWindow] = useState(DEFAULT_TIME_WINDOW);
 
     // watchlist
     const [savedTokens, addSavedToken] = useSavedTokens();
+
+    const { chartData } = useBalancerToken(address);
 
     return (
         <PageWrapper>
@@ -279,13 +283,13 @@ export default function TokenPage({
                                         >
                                             TVL
                                         </ToggleElementFree>
-                                        {/*<ToggleElementFree
+                                        <ToggleElementFree
                                             isActive={view === ChartView.PRICE}
                                             fontSize="12px"
                                             onClick={() => setView(ChartView.PRICE)}
                                         >
                                             Price
-                                        </ToggleElementFree>*/}
+                                        </ToggleElementFree>
                                     </ToggleWrapper>
                                 </RowBetween>
                                 {view === ChartView.TVL ? (
@@ -309,20 +313,15 @@ export default function TokenPage({
                                         setLabel={setValueLabel}
                                     />
                                 ) : view === ChartView.PRICE ? (
-                                    priceData.length > 0 ? (
-                                        <LineChart
-                                            data={priceData}
-                                            color={backgroundColor}
-                                            minHeight={340}
-                                            value={latestValue}
-                                            label={valueLabel}
-                                            setValue={setLatestValue}
-                                            setLabel={setValueLabel}
-                                        />
+                                    chartData.length > 0 ? (
+                                        <div style={{ backgroundColor: 'white', borderRadius: 8, marginTop: 8 }}>
+                                            <TokenPriceChart data={chartData} height={500} width={900} ratio={1} />
+                                        </div>
                                     ) : (
                                         <LocalLoader fill={false} />
                                     )
                                 ) : null}
+
                                 {/* <RowBetween width="100%">
                   <div> </div>
                   <AutoRow gap="4px" width="fit-content">

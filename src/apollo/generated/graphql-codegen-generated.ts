@@ -3670,6 +3670,32 @@ export type BalancerTokenPricesQuery = {
     }>;
 };
 
+export type BalancerChartTokenPricesQueryVariables = Exact<{
+    asset: Scalars['Bytes'];
+}>;
+
+export type BalancerChartTokenPricesQuery = {
+    __typename: 'Query';
+    prices1: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+    prices2: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+    prices3: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+    prices4: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+    prices5: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+    prices6: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+    prices7: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+    prices8: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+    prices9: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+    prices10: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; priceUSD: string; amount: string }>;
+};
+
+export type BalancerChartTokenPriceFragment = {
+    __typename: 'TokenPrice';
+    id: string;
+    timestamp: number;
+    priceUSD: string;
+    amount: string;
+};
+
 export type BalancerTokenPriceFragment = {
     __typename: 'TokenPrice';
     id: string;
@@ -4391,6 +4417,14 @@ export const UserFragmentDoc = gql`
                 id
             }
         }
+    }
+`;
+export const BalancerChartTokenPriceFragmentDoc = gql`
+    fragment BalancerChartTokenPrice on TokenPrice {
+        id
+        timestamp
+        priceUSD
+        amount
     }
 `;
 export const BalancerTokenPriceFragmentDoc = gql`
@@ -5173,6 +5207,136 @@ export type BalancerTokenPricesLazyQueryHookResult = ReturnType<typeof useBalanc
 export type BalancerTokenPricesQueryResult = Apollo.QueryResult<
     BalancerTokenPricesQuery,
     BalancerTokenPricesQueryVariables
+>;
+export const BalancerChartTokenPricesDocument = gql`
+    query BalancerChartTokenPrices($asset: Bytes!) {
+        prices1: tokenPrices(skip: 0, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
+            ...BalancerChartTokenPrice
+        }
+        prices2: tokenPrices(
+            skip: 1000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices3: tokenPrices(
+            skip: 2000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices4: tokenPrices(
+            skip: 3000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices5: tokenPrices(
+            skip: 4000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices6: tokenPrices(
+            skip: 5000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices7: tokenPrices(
+            skip: 6000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices8: tokenPrices(
+            skip: 7000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices9: tokenPrices(
+            skip: 8000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+        prices10: tokenPrices(
+            skip: 9000
+            first: 1000
+            orderBy: timestamp
+            orderDirection: desc
+            where: { asset: $asset }
+        ) {
+            ...BalancerChartTokenPrice
+        }
+    }
+    ${BalancerChartTokenPriceFragmentDoc}
+`;
+
+/**
+ * __useBalancerChartTokenPricesQuery__
+ *
+ * To run a query within a React component, call `useBalancerChartTokenPricesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBalancerChartTokenPricesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBalancerChartTokenPricesQuery({
+ *   variables: {
+ *      asset: // value for 'asset'
+ *   },
+ * });
+ */
+export function useBalancerChartTokenPricesQuery(
+    baseOptions: Apollo.QueryHookOptions<BalancerChartTokenPricesQuery, BalancerChartTokenPricesQueryVariables>,
+) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return Apollo.useQuery<BalancerChartTokenPricesQuery, BalancerChartTokenPricesQueryVariables>(
+        BalancerChartTokenPricesDocument,
+        options,
+    );
+}
+export function useBalancerChartTokenPricesLazyQuery(
+    baseOptions?: Apollo.LazyQueryHookOptions<BalancerChartTokenPricesQuery, BalancerChartTokenPricesQueryVariables>,
+) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return Apollo.useLazyQuery<BalancerChartTokenPricesQuery, BalancerChartTokenPricesQueryVariables>(
+        BalancerChartTokenPricesDocument,
+        options,
+    );
+}
+export type BalancerChartTokenPricesQueryHookResult = ReturnType<typeof useBalancerChartTokenPricesQuery>;
+export type BalancerChartTokenPricesLazyQueryHookResult = ReturnType<typeof useBalancerChartTokenPricesLazyQuery>;
+export type BalancerChartTokenPricesQueryResult = Apollo.QueryResult<
+    BalancerChartTokenPricesQuery,
+    BalancerChartTokenPricesQueryVariables
 >;
 export const GetBalancerPoolsDocument = gql`
     query GetBalancerPools(

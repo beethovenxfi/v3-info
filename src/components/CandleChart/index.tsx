@@ -71,7 +71,7 @@ const CandleChart = ({
         return () => window.removeEventListener('resize', handleResize);
     }, [isClient, chartRef, handleResize]); // Empty array ensures that effect is only run on mount and unmount
 
-    // if chart not instantiated in canvas, create it
+    // if Chart not instantiated in canvas, create it
     useEffect(() => {
         if (!chartCreated && data && !!chartRef?.current?.parentElement) {
             const chart = createChart(chartRef.current, {
@@ -142,7 +142,7 @@ const CandleChart = ({
 
             series.setData(data);
 
-            // update the title when hovering on the chart
+            // update the title when hovering on the Chart
             chartCreated.subscribeCrosshairMove(function (param) {
                 if (
                     chartRef?.current &&
@@ -173,7 +173,7 @@ const CandleChart = ({
                 {topLeft ?? null}
                 {topRight ?? null}
             </RowBetween>
-            <div ref={chartRef} id={'candle-chart'} {...rest} />
+            <div ref={chartRef} id={'candle-Chart'} {...rest} />
             <RowBetween>
                 {bottomLeft ?? null}
                 {bottomRight ?? null}
