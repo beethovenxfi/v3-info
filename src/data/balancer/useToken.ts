@@ -53,7 +53,7 @@ export function useBalancerToken(tokenAddress: string): BalancerTokenData {
             return true;
         }
 
-        return Math.abs((item.low - item.high) / Math.abs(item.low + item.high) / 2) < 0.2;
+        return Math.abs((item.low - item.high) / (Math.abs(item.low + item.high) / 2)) < 0.2;
     });
 
     return {
