@@ -30,8 +30,8 @@ import { useActiveNetworkVersion } from 'state/application/hooks';
 import { networkPrefix } from 'utils/networkPrefix';
 import { EthereumNetworkInfo } from 'constants/networks';
 import { GenericImageWrapper } from 'components/Logo';
-import { useCMCLink } from 'hooks/useCMCLink';
-import CMCLogo from '../../assets/images/cmc.png';
+import { useCoingeckoLink } from 'hooks/useCoingeckoLink';
+import CoingeckoLogo from '../../assets/images/coingecko.png';
 import { useBalancerTokenData, useBalancerTokenPageData } from '../../data/balancer/useTokens';
 import { useBalancerPoolsForToken } from '../../data/balancer/usePools';
 import { useBalancerTransactionData } from '../../data/balancer/useTransactions';
@@ -65,7 +65,7 @@ const ResponsiveRow = styled(RowBetween)`
   `};
 `;
 
-const StyledCMCLogo = styled.img`
+const StyledCoingeckoLogo = styled.img`
     height: 16px;
     display: flex;
     justify-content: center;
@@ -97,7 +97,7 @@ export default function TokenPage({
         window.scrollTo(0, 0);
     }, []);
 
-    const cmcLink = useCMCLink(address);
+    const coingeckoLink = useCoingeckoLink(address);
     const tokenData = useBalancerTokenData(address);
     const poolData = useBalancerPoolsForToken(address);
     const { swaps, joinExits } = useBalancerTransactionData(
@@ -150,9 +150,9 @@ export default function TokenPage({
                                         fill={savedTokens.includes(address)}
                                         onClick={() => addSavedToken(address)}
                                     />
-                                    {cmcLink && (
+                                    {coingeckoLink && (
                                         <StyledExternalLink
-                                            href={cmcLink}
+                                            href={coingeckoLink}
                                             style={{ marginLeft: '12px' }}
                                             onClickCapture={() => {
                                                 ReactGA.event({
@@ -161,7 +161,7 @@ export default function TokenPage({
                                                 });
                                             }}
                                         >
-                                            <StyledCMCLogo src={CMCLogo} />
+                                            <StyledCoingeckoLogo src={CoingeckoLogo} />
                                         </StyledExternalLink>
                                     )}
                                     <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
