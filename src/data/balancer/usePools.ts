@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { unixToDate } from '../../utils/date';
 import { BalancerChartDataItem, PoolData } from './balancerTypes';
 import { BALANCER_SUBGRAPH_START_TIMESTAMP } from './constants';
+import { useActiveNetworkVersion } from 'state/application/hooks';
 
 function getPoolValues(
     poolId: string,
@@ -29,6 +30,7 @@ function getPoolValues(
 }
 
 export function useBalancerPools(): PoolData[] {
+    const [activeNetwork] = useActiveNetworkVersion();
     const [t24, t48, tWeek] = useDeltaTimestamps();
     const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek]);
     const [block24, block48, blockWeek] = blocks ?? [];
@@ -43,6 +45,9 @@ export function useBalancerPools(): PoolData[] {
                     block48: { number: parseInt(block48.number) },
                     blockWeek: { number: parseInt(blockWeek.number) },
                 },
+                context: {
+                    uri: activeNetwork.clientUri,
+                }
             });
         }
     }, [block24]);
@@ -112,8 +117,12 @@ export function useBalancerPoolPageData(poolId: string): {
     volumeData: BalancerChartDataItem[];
     feesData: BalancerChartDataItem[];
 } {
+    const [activeNetwork] = useActiveNetworkVersion();
     const { data } = useGetPoolChartDataQuery({
         variables: { poolId, startTimestamp: BALANCER_SUBGRAPH_START_TIMESTAMP },
+        context: {
+            uri: activeNetwork.clientUri,
+        },
     });
 
     if (!data) {

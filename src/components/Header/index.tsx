@@ -9,6 +9,7 @@ import { useActiveNetworkVersion } from 'state/application/hooks';
 import { networkPrefix } from 'utils/networkPrefix';
 import { AutoColumn } from 'components/Column';
 import { BALANCER_APP_LOGO } from '../../data/balancer/constants';
+import NetworkDropdown from 'components/Menu/NetworkDropdown';
 
 const HeaderFrame = styled.div`
     display: grid;
@@ -165,12 +166,15 @@ export default function Header() {
                     </UniIcon>
                 </Title>
                 <HeaderLinks>
-                    <StyledNavLink
+                <StyledNavLink
                         id={`pool-nav-link`}
                         to={networkPrefix(activeNewtork)}
                         isActive={(match, { pathname }) => pathname === '/'}
                     >
-                        Overview
+                        Protocol
+                    </StyledNavLink>
+                    <StyledNavLink id={`stake-nav-link`} to={networkPrefix(activeNewtork) + 'chain'}>
+                        Chain
                     </StyledNavLink>
                     <StyledNavLink id={`stake-nav-link`} to={networkPrefix(activeNewtork) + 'pools'}>
                         Pools
@@ -181,13 +185,14 @@ export default function Header() {
                 </HeaderLinks>
             </HeaderRow>
             <HeaderControls>
+            <NetworkDropdown />
                 <SearchSmall />
                 <Menu />
             </HeaderControls>
             <SmallContentGrouping>
                 <AutoColumn gap="sm">
                     <RowBetween>
-                        {/*<NetworkDropdown />*/}
+                        <NetworkDropdown />
                         <div />
                         <Menu />
                     </RowBetween>

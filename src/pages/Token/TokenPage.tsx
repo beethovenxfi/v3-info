@@ -28,7 +28,7 @@ import { MonoSpace } from 'components/shared';
 import dayjs from 'dayjs';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import { networkPrefix } from 'utils/networkPrefix';
-import { EthereumNetworkInfo } from 'constants/networks';
+import { FantomNetworkInfo } from 'constants/networks';
 import { GenericImageWrapper } from 'components/Logo';
 import { useCoingeckoLink } from 'hooks/useCoingeckoLink';
 import CoingeckoLogo from '../../assets/images/coingecko.png';
@@ -87,7 +87,6 @@ export default function TokenPage({
 }: RouteComponentProps<{ address: string }>) {
     const [activeNetwork] = useActiveNetworkVersion();
     const theme = useTheme();
-
     address = address.toLowerCase();
     // theming
     const backgroundColor = useColor(address);
@@ -107,7 +106,7 @@ export default function TokenPage({
     const { tvlData, volumeData, priceData } = useBalancerTokenPageData(address);
 
     // Chart labels
-    const [view, setView] = useState(ChartView.PRICE);
+    const [view, setView] = useState(ChartView.VOL);
     const [latestValue, setLatestValue] = useState<number | undefined>();
     const [valueLabel, setValueLabel] = useState<string | undefined>();
     const [timeWindow] = useState(DEFAULT_TIME_WINDOW);
@@ -124,7 +123,7 @@ export default function TokenPage({
                 !tokenData.exists ? (
                     <LightGreyCard style={{ textAlign: 'center' }}>
                         No pool has been created with this token yet. Create one
-                        <StyledExternalLink style={{ marginLeft: '4px' }} href={`${BALANCER_APP_LINK}#/pool-create`}>
+                        <StyledExternalLink style={{ marginLeft: '4px' }} href={`${activeNetwork.appUri}#/pool-create`}>
                             here.
                         </StyledExternalLink>
                     </LightGreyCard>
@@ -183,7 +182,7 @@ export default function TokenPage({
                                         <TYPE.main ml={'6px'} fontSize="20px">
                                             ({tokenData.symbol})
                                         </TYPE.main>
-                                        {activeNetwork === EthereumNetworkInfo ? null : (
+                                        {activeNetwork === FantomNetworkInfo ? null : (
                                             <GenericImageWrapper
                                                 src={activeNetwork.imageURL}
                                                 style={{ marginLeft: '8px' }}
@@ -196,7 +195,7 @@ export default function TokenPage({
                                         (<Percent value={tokenData.priceUSDChange} />)
                                     </RowFlat>
                                 </AutoColumn>
-                                {activeNetwork !== EthereumNetworkInfo ? null : (
+                                {activeNetwork !== FantomNetworkInfo ? null : (
                                     <RowFixed>
                                         <StyledExternalLink href={`${BALANCER_APP_LINK}#/trade/${address}`}>
                                             <ButtonPrimary

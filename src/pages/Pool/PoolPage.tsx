@@ -20,19 +20,14 @@ import LineChart from 'components/LineChart/alt';
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index';
 import BarChart from 'components/BarChart/alt';
 import PoolCurrencyLogo from 'components/PoolCurrencyLogo';
-import TransactionTable from 'components/TransactionsTable/SwapsTable';
 import { useSavedPools } from 'state/user/hooks';
 import { MonoSpace } from 'components/shared';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import { networkPrefix } from 'utils/networkPrefix';
-import { EthereumNetworkInfo } from 'constants/networks';
-import { Transaction } from '../../types';
 import { useBalancerPoolData, useBalancerPoolPageData } from '../../data/balancer/usePools';
 import { useBalancerTransactionData } from '../../data/balancer/useTransactions';
 import SwapsTable from 'components/TransactionsTable/SwapsTable';
-import { BalPieChart } from '../../components/PieChart/BalPieChart';
 import JoinExitTable from '../../components/TransactionsTable/JoinExitTable';
-import { BALANCER_APP_LINK } from '../../data/balancer/constants';
 
 const ContentLayout = styled.div`
     display: grid;
@@ -172,7 +167,7 @@ export default function PoolPage({
                             </TokenResponsiveRow>
                         </AutoColumn>
                         <RowFixed>
-                            <StyledExternalLink href={`${BALANCER_APP_LINK}#/pool/${poolId}`}>
+                            <StyledExternalLink href={`${activeNetwork.appUri}#/pool/${poolId}`}>
                                 <ButtonGray width="128px" mr="12px" style={{ height: '44px' }}>
                                     <RowBetween>
                                         <Download size={24} />
@@ -180,7 +175,7 @@ export default function PoolPage({
                                     </RowBetween>
                                 </ButtonGray>
                             </StyledExternalLink>
-                            <StyledExternalLink href={`${BALANCER_APP_LINK}#/trade`}>
+                            <StyledExternalLink href={`${activeNetwork.appUri}#/trade`}>
                                 <ButtonPrimary width="100px" style={{ height: '44px' }}>
                                     Trade
                                 </ButtonPrimary>

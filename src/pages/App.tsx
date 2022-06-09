@@ -13,10 +13,11 @@ import TopBar from 'components/Header/TopBar';
 import { RedirectInvalidToken } from './Token/redirects';
 import { LocalLoader } from 'components/Loader';
 import PoolPage from './Pool/PoolPage';
+import Protocol from './Protocol';
 import { ExternalLink, TYPE } from 'theme';
 import { useActiveNetworkVersion, useSubgraphStatus } from 'state/application/hooks';
 import { DarkGreyCard } from 'components/Card';
-import { SUPPORTED_NETWORK_VERSIONS, EthereumNetworkInfo, OptimismNetworkInfo } from 'constants/networks';
+import { SUPPORTED_NETWORK_VERSIONS, FantomNetworkInfo, OptimismNetworkInfo } from 'constants/networks';
 import { loadTokenListTokens } from '../state/token-lists/token-lists';
 
 const AppWrapper = styled.div`
@@ -86,20 +87,33 @@ const WarningBanner = styled.div`
 const BLOCK_DIFFERENCE_THRESHOLD = 30;
 
 export default function App() {
-    // pretend load buffer
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        setTimeout(() => setLoading(false), 1300);
-        loadTokenListTokens().catch();
-    }, []);
 
     // update network based on route
     // TEMP - find better way to do this
     const location = useLocation();
     const [activeNetwork, setActiveNetwork] = useActiveNetworkVersion();
+
+    let tokenListEndpoint = 'fantomToken';
+    let networkShortName = 'fantom';
+    if (activeNetwork === OptimismNetworkInfo) {
+        tokenListEndpoint = 'optimismToken'
+        networkShortName = 'optimism'
+    }
+    const apiEndpoint ='https://1g2ag2hb.apicdn.sanity.io/v1/data/query/production?query=%7B%0A%20%20%22name%22%3A%20%22Beethoven%20X%22%2C%0A%20%20%22timestamp%22%3A%20%222021-10-06T18%3A18%3A18.181Z%22%2C%0A%20%20%22version%22%3A%20%7B%0A%20%20%20%20%22major%22%3A%201%2C%0A%20%20%20%20%22minor%22%3A%200%2C%0A%20%20%20%20%22patch%22%3A%202%0A%20%20%7D%2C%0A%20%20%22tags%22%3A%20%7B%7D%2C%0A%20%20%22logoURI%22%3A%20%22https%3A%2F%2Fbeethoven-assets.s3.eu-central-1.amazonaws.com%2Fbeets-icon-128.png%22%2C%0A%20%20%22keywords%22%3A%20%5B%0A%20%20%20%20%22beethoven%22%2C%0A%20%20%20%20%22default%22%2C%0A%20%20%20%20%22' 
+    + networkShortName + '%22%0A%20%20%5D%2C%0A%20%20%22tokens%22%3A%20*%5B_type%20%3D%3D%20%22' 
+    + tokenListEndpoint + '%22%5D%7B%0A%20%20%20%20%20%20name%2C%0A%20%20%20%20%20%20address%2C%0A%20%20%20%20%20%20symbol%2C%0A%20%20%20%20%20%20decimals%2C%0A%20%20%20%20%20%20%22chainId%22%3A%20' 
+    + activeNetwork.chainId + '%2C%0A%20%20%20%20%20%20logoURI%0A%20%20%20%7D%0A%7D'
+        // pretend load buffer
+        const [loading, setLoading] = useState(true);
+        useEffect(() => {
+            setTimeout(() => setLoading(false), 1300);
+            loadTokenListTokens(apiEndpoint).catch();
+        }, [apiEndpoint]);
+
+
     useEffect(() => {
         if (location.pathname === '/') {
-            setActiveNetwork(EthereumNetworkInfo);
+            setActiveNetwork(FantomNetworkInfo);
         } else {
             SUPPORTED_NETWORK_VERSIONS.map((n) => {
                 if (location.pathname.includes(n.route.toLocaleLowerCase())) {
@@ -107,7 +121,7 @@ export default function App() {
                 }
             });
         }
-    }, [location.pathname, setActiveNetwork]);
+    }, [location.pathname, setActiveNetwork,]);
 
     // subgraph health
     const [subgraphStatus] = useSubgraphStatus();
@@ -160,6 +174,7 @@ export default function App() {
                             <Switch>
                                 <Route exact strict path="/:networkID?/pools/:poolId" component={PoolPage} />
                                 <Route exact strict path="/:networkID?/pools" component={PoolsOverview} />
+                                <Route exact strict path="/:networkID?/chain" component={Home} />
                                 <Route
                                     exact
                                     strict
@@ -167,9 +182,9 @@ export default function App() {
                                     component={RedirectInvalidToken}
                                 />
                                 <Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
-                                <Route exact path="/:networkID?" component={Home} />
+                                <Route exact path="/:networkID?" component={Protocol} />
                             </Switch>
-                            <Marginer />
+                            {location.pathname !== '/' ? <Marginer /> : null }
                         </BodyWrapper>
                     )}
                 </AppWrapper>

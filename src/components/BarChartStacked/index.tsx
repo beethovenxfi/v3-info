@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, ReactNode } from 'react';
-import { ResponsiveContainer, XAxis, Tooltip, AreaChart, Area } from 'recharts';
+import { Bar, BarChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import styled from 'styled-components';
 import Card from 'components/Card';
 import { RowBetween } from 'components/Row';
@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import useTheme from 'hooks/useTheme';
 import { darken } from 'polished';
+import { formatAmount, formatDollarAmount } from 'utils/numbers';
 dayjs.extend(utc);
 
 const DEFAULT_HEIGHT = 300;
@@ -24,13 +25,34 @@ const Wrapper = styled(Card)`
   }
 `;
 
+const CustomBar = ({
+    x,
+    y,
+    width,
+    height,
+    fill,
+}: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    fill: string;
+}) => {
+    return (
+        <g>
+            <rect x={x} y={y} fill={fill} width={width} height={height} rx="2" />
+        </g>
+    );
+};
+
 export type LineChartProps = {
     data: any[];
     color?: string | undefined;
+    tokenSet: string[],
+    colorSet: string[],
+    isDollarAmount?: boolean,
     height?: number | undefined;
     minHeight?: number;
-    setValue?: Dispatch<SetStateAction<number | undefined>>; // used for value on hover
-    setLabel?: Dispatch<SetStateAction<string | undefined>>; // used for label of valye
     value?: number;
     label?: string;
     topLeft?: ReactNode | undefined;
@@ -39,13 +61,14 @@ export type LineChartProps = {
     bottomRight?: ReactNode | undefined;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-const Chart = ({
+const BarChartStacked = ({
     data,
     color = '#56B2A4',
+    tokenSet,
+    colorSet,
+    isDollarAmount,
     value,
     label,
-    setValue,
-    setLabel,
     topLeft,
     topRight,
     bottomLeft,
@@ -55,6 +78,7 @@ const Chart = ({
 }: LineChartProps) => {
     const theme = useTheme();
     const parsedValue = value;
+    const now = dayjs();
 
     return (
         <Wrapper minHeight={minHeight} {...rest}>
@@ -63,27 +87,17 @@ const Chart = ({
                 {topRight ?? null}
             </RowBetween>
             <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
+                <BarChart
                     width={500}
                     height={300}
                     data={data}
                     margin={{
                         top: 5,
                         right: 30,
-                        left: 20,
+                        left: 25,
                         bottom: 5,
                     }}
-                    onMouseLeave={() => {
-                        setLabel && setLabel(undefined);
-                        setValue && setValue(undefined);
-                    }}
                 >
-                    <defs>
-                        <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
-                            <stop offset="100%" stopColor={color} stopOpacity={0} />
-                        </linearGradient>
-                    </defs>
                     <XAxis
                         dataKey="time"
                         axisLine={false}
@@ -91,23 +105,40 @@ const Chart = ({
                         tickFormatter={(time) => dayjs(time).format('DD.MM.YY')}
                         minTickGap={10}
                     />
-                    <Tooltip
-                        cursor={{ stroke: theme.bg2 }}
-                        contentStyle={{ display: 'none' }}
-                        formatter={(
-                            value: number,
-                            name: string,
-                            props: { payload: { time: string; value: number } },
-                        ) => {
-                            if (setValue && parsedValue !== props.payload.value) {
-                                setValue(props.payload.value);
-                            }
-                            const formattedTime = dayjs(props.payload.time).format('MMM D, YYYY');
-                            if (setLabel && label !== formattedTime) setLabel(formattedTime);
-                        }}
+                    <YAxis 
+                    allowDataOverflow={true} 
+                    tickFormatter={(entry) => isDollarAmount ? formatDollarAmount(entry): formatAmount(entry)}
                     />
-                    <Area dataKey="value" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
-                </AreaChart>
+                    <Legend />
+                    <Tooltip
+                    contentStyle={{ backgroundColor: "#191B1F" }}
+                    formatter={(value:number) => isDollarAmount ?formatDollarAmount(value) : formatAmount(value)}
+                    labelFormatter={(time) => {
+                        const isCurrent = dayjs(time).add(1, 'week').isAfter(now);
+                        return dayjs(time).format('DD.MM.YY') + ' - ' + (isCurrent ? 'today' : dayjs(time).add(1, 'week').format('DD.MM.YY'))}}
+                    />
+                   { tokenSet.map((el) => 
+                    <Bar 
+                    key={el} 
+                    dataKey={el} 
+                    stackId="a" 
+                    stroke={colorSet[tokenSet.indexOf(el)]} 
+                    fill={colorSet[tokenSet.indexOf(el)]} 
+                    strokeWidth={2}
+                    shape={(props) => {
+                        return (
+                            <CustomBar
+                                height={props.height}
+                                width={props.width}
+                                x={props.x}
+                                y={props.y}
+                                fill={colorSet[tokenSet.indexOf(el)]}
+                            />
+                        );
+                    }} 
+                    />
+                    )}
+                </BarChart>
             </ResponsiveContainer>
             <RowBetween>
                 {bottomLeft ?? null}
@@ -117,4 +148,4 @@ const Chart = ({
     );
 };
 
-export default Chart;
+export default BarChartStacked;

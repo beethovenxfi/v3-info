@@ -107,7 +107,7 @@ const Chart = ({
                         axisLine={false}
                         tickLine={false}
                         tickFormatter={(time) =>
-                            dayjs(time).format(activeWindow === VolumeWindow.monthly ? 'MMM' : 'DD')
+                            dayjs(time).format(activeWindow === VolumeWindow.monthly ? 'MMM' : 'DD.MM.YY')
                         }
                         minTickGap={10}
                     />

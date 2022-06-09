@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { StyledInternalLink, TYPE } from 'theme';
 import { useOnClickOutside } from 'hooks/useOnClickOutside';
 import { AutoColumn } from 'components/Column';
-import { EthereumNetworkInfo } from '../../constants/networks';
+import { FantomNetworkInfo } from '../../constants/networks';
 
 const Container = styled.div`
     position: relative;
@@ -105,7 +105,7 @@ export default function NetworkDropdown() {
                     >
                         {activeNetwork.name}
                     </TYPE.main>
-                    {activeNetwork === EthereumNetworkInfo ? null : (
+                    {activeNetwork === FantomNetworkInfo ? null : (
                         <Badge bgColor={activeNetwork.primaryColor} style={{ margin: '0 4px' }}>
                             L2
                         </Badge>
@@ -123,7 +123,7 @@ export default function NetworkDropdown() {
                             return (
                                 <StyledInternalLink
                                     key={n.id}
-                                    to={`${n === EthereumNetworkInfo ? '' : '/' + n.route}/`}
+                                    to={`${n === FantomNetworkInfo ? '' : '/' + n.route}/chain`}
                                 >
                                     <NetworkRow
                                         onClick={() => {

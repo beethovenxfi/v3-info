@@ -4,8 +4,8 @@ import {
     useGetTransactionDataLazyQuery,
 } from '../../apollo/generated/graphql-codegen-generated';
 import { useEffect, useRef } from 'react';
-import { BALANCER_SUBGRAPH_START_TIMESTAMP } from './constants';
 import { orderBy, uniqBy, groupBy, mapValues, sumBy, map } from 'lodash';
+import { useActiveNetworkVersion } from 'state/application/hooks';
 
 export function useBalancerTransactionData(
     addresses: string[],
@@ -15,6 +15,7 @@ export function useBalancerTransactionData(
     joinExits: BalancerJoinExitFragment[];
     swapPairVolumes: { name: string; value: number }[];
 } {
+    const [activeNetwork] = useActiveNetworkVersion();
     const [getTokenTransactionData, { data }] = useGetTransactionDataLazyQuery();
     const ref = useRef<{ poolIds: string[]; addresses: string[] }>({ poolIds: [], addresses: [] });
 
@@ -26,7 +27,10 @@ export function useBalancerTransactionData(
                 variables: {
                     addresses,
                     poolIds,
-                    startTimestamp: BALANCER_SUBGRAPH_START_TIMESTAMP,
+                    startTimestamp: activeNetwork.startTimeStamp,
+                },
+                context: {
+                    uri: activeNetwork.clientUri,
                 },
             });
         }
