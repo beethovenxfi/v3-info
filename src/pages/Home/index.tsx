@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { AutoColumn } from 'components/Column';
 import { TYPE } from 'theme';
@@ -51,10 +51,6 @@ export default function Home() {
     const [rightLabel, setRightLabel] = useState<string | undefined>();
     const [swapsLabel, setSwapsLabel] = useState<string | undefined>();
     const [feesLabel, setFeesLabel] = useState<string | undefined>();
-
-    const tvlHover = useRef<number | undefined>();
-
-
     
     useEffect(() => {
         if (protocolData) {
