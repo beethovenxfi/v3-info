@@ -184,7 +184,7 @@ export default function App() {
                                 <Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
                                 <Route exact path="/:networkID?" component={Protocol} />
                             </Switch>
-                            {location.pathname !== '/' ? <Marginer /> : null }
+                            <Marginer />
                         </BodyWrapper>
                     )}
                 </AppWrapper>
