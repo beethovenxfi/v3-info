@@ -30,14 +30,20 @@ const ResponsiveGrid = styled.div`
 
     @media screen and (max-width: 900px) {
         grid-template-columns: 20px 1.5fr repeat(2, 1fr);
-        & :nth-child(3) {
+        & ${Label}:nth-child(3) {
+            display: none;
+        }
+        & ${GreyBadge}:nth-child(3) {
             display: none;
         }
     }
 
     @media screen and (max-width: 500px) {
         grid-template-columns: 20px 1.5fr repeat(1, 1fr);
-        & :nth-child(5) {
+        & ${Label}:nth-child(4) {
+            display: none;
+        }
+        & ${GreyBadge}:nth-child(4) {
             display: none;
         }
     }
@@ -61,8 +67,8 @@ const LinkWrapper = styled(Link)`
 const SORT_FIELD = {
     feeTier: 'feeTier',
     volumeUSD: 'volumeUSD',
-    tvlUSD: 'tvlUSD',
     volumeUSDWeek: 'volumeUSDWeek',
+    tvlUSD: 'tvlUSD',
 };
 
 const DataRow = ({ poolData, index }: { poolData: PoolData; index: number }) => {
@@ -74,21 +80,22 @@ const DataRow = ({ poolData, index }: { poolData: PoolData; index: number }) => 
                 <Label fontWeight={400}>{index + 1}</Label>
                 <Label fontWeight={400}>
                     <RowFixed>
-                        <TYPE.label mr="8px">{poolData.name}</TYPE.label>
-                        <PoolCurrencyLogo tokens={poolData.tokens} />
-                        <GreyBadge ml="10px" fontSize="14px">
-                            {(poolData.swapFee * 100).toFixed(2)}%
+                    <PoolCurrencyLogo tokens={poolData.tokens} />
+                        <TYPE.label mr="5px">{poolData.name}</TYPE.label>
+                        <GreyBadge ml="5px" fontSize="14px">
+                            {(poolData.swapFee * 100) < 0.01 ? (poolData.swapFee * 100).toFixed(3) : (poolData.swapFee * 100).toFixed(2)}%
                         </GreyBadge>
                     </RowFixed>
                 </Label>
-                <Label end={1} fontWeight={400}>
-                    {formatDollarAmount(poolData.tvlUSD)}
-                </Label>
+                
                 <Label end={1} fontWeight={400}>
                     {formatDollarAmount(poolData.volumeUSD)}
                 </Label>
                 <Label end={1} fontWeight={400}>
                     {formatDollarAmount(poolData.volumeUSDWeek)}
+                </Label>
+                <Label end={1} fontWeight={400}>
+                    {formatDollarAmount(poolData.tvlUSD)}
                 </Label>
             </ResponsiveGrid>
         </LinkWrapper>
@@ -119,7 +126,7 @@ export default function PoolTable({ poolDatas, maxItems = MAX_ITEMS }: { poolDat
     const sortedPools = useMemo(() => {
         return poolDatas
             ? poolDatas
-                  .filter((x) => !!x && !POOL_HIDE.includes(x.address))
+                  .filter((x) => !!x && !POOL_HIDE.includes(x.id))
                   .sort((a, b) => {
                       if (a && b) {
                           return a[sortField as keyof PoolData] > b[sortField as keyof PoolData]
@@ -155,20 +162,20 @@ export default function PoolTable({ poolDatas, maxItems = MAX_ITEMS }: { poolDat
     return (
         <Wrapper>
             {sortedPools.length > 0 ? (
-                <AutoColumn gap="16px">
+                <AutoColumn gap="12px">
                     <ResponsiveGrid>
                         <Label color={theme.text2}>#</Label>
                         <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.feeTier)}>
                             Pool {arrow(SORT_FIELD.feeTier)}
                         </ClickableText>
-                        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
-                            TVL {arrow(SORT_FIELD.tvlUSD)}
-                        </ClickableText>
                         <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
-                            Volume 24H {arrow(SORT_FIELD.volumeUSD)}
+                        Volume 24H  {arrow(SORT_FIELD.volumeUSD)}
                         </ClickableText>
                         <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSDWeek)}>
-                            Volume 7D {arrow(SORT_FIELD.volumeUSDWeek)}
+                        Volume 7D {arrow(SORT_FIELD.volumeUSDWeek)}
+                        </ClickableText>
+                        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
+                             TVL{arrow(SORT_FIELD.tvlUSD)}
                         </ClickableText>
                     </ResponsiveGrid>
                     <Break />

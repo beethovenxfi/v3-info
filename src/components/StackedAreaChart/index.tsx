@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, ReactNode } from 'react';
-import { ResponsiveContainer, XAxis, Tooltip, AreaChart, Area } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import styled from 'styled-components';
 import Card from 'components/Card';
 import { RowBetween } from 'components/Row';
@@ -7,6 +7,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import useTheme from 'hooks/useTheme';
 import { darken } from 'polished';
+import { VolumeWindow } from 'types';
+import { formatDollarAmount } from 'utils/numbers';
 dayjs.extend(utc);
 
 const DEFAULT_HEIGHT = 300;
@@ -24,13 +26,27 @@ const Wrapper = styled(Card)`
   }
 `;
 
+const modifyFormatter = (value: any, name : any, color: string) => {
+    const nameJSX = <span><span style={{
+      display: "inline-block",
+      marginRight: "5px",
+      borderRadius: "10px",
+      width: "10px",
+      height: "10px",
+      backgroundColor: color
+    }}></span>{name} : {value}</span>
+    return [nameJSX];
+  }
+
 export type LineChartProps = {
     data: any[];
     color?: string | undefined;
+    tokenSet: string[],
+    colorSet: string[],
+    labelSet?: string[],
     height?: number | undefined;
     minHeight?: number;
-    setValue?: Dispatch<SetStateAction<number | undefined>>; // used for value on hover
-    setLabel?: Dispatch<SetStateAction<string | undefined>>; // used for label of valye
+    activeWindow?: VolumeWindow;
     value?: number;
     label?: string;
     topLeft?: ReactNode | undefined;
@@ -39,13 +55,15 @@ export type LineChartProps = {
     bottomRight?: ReactNode | undefined;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-const Chart = ({
+const StackedAreaChart = ({
     data,
     color = '#56B2A4',
+    tokenSet,
+    colorSet,
+    labelSet,
     value,
     label,
-    setValue,
-    setLabel,
+    activeWindow,
     topLeft,
     topRight,
     bottomLeft,
@@ -70,19 +88,17 @@ const Chart = ({
                     margin={{
                         top: 5,
                         right: 30,
-                        left: 20,
+                        left: 25,
                         bottom: 5,
-                    }}
-                    onMouseLeave={() => {
-                        setLabel && setLabel(undefined);
-                        setValue && setValue(undefined);
                     }}
                 >
                     <defs>
-                        <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor={darken(0.36, color)} stopOpacity={0.5} />
-                            <stop offset="100%" stopColor={color} stopOpacity={0} />
+                        {tokenSet.map((el) => 
+                        <linearGradient key={el + colorSet[tokenSet.indexOf(el)]} id={colorSet[tokenSet.indexOf(el)]} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor={darken(0.36, colorSet[tokenSet.indexOf(el)])} stopOpacity={0.5} />
+                            <stop offset="100%" stopColor={colorSet[tokenSet.indexOf(el)]} stopOpacity={0} />
                         </linearGradient>
+                        )}
                     </defs>
                     <XAxis
                         dataKey="time"
@@ -91,22 +107,19 @@ const Chart = ({
                         tickFormatter={(time) => dayjs(time).format('DD.MM.YY')}
                         minTickGap={10}
                     />
-                    <Tooltip
-                        cursor={{ stroke: theme.bg2 }}
-                        contentStyle={{ display: 'none' }}
-                        formatter={(
-                            value: number,
-                            name: string,
-                            props: { payload: { time: string; value: number } },
-                        ) => {
-                            if (setValue && parsedValue !== props.payload.value) {
-                                setValue(props.payload.value);
-                            }
-                            const formattedTime = dayjs(props.payload.time).format('MMM D, YYYY');
-                            if (setLabel && label !== formattedTime) setLabel(formattedTime);
-                        }}
+                    <YAxis 
+                    allowDataOverflow={true} 
+                    tickFormatter={(el) => formatDollarAmount(el, 2, true)}
                     />
-                    <Area dataKey="value" type="monotone" stroke={color} fill="url(#gradient)" strokeWidth={2} />
+                    <Legend />
+                    <Tooltip
+                    contentStyle={{ backgroundColor: "#191B1F" }}
+                    formatter={(value:number) => formatDollarAmount(value)}
+                    labelFormatter={(time) => dayjs(time).format('DD.MM.YY')}
+                    />
+                   {tokenSet.map((el) => 
+                    <Area key={el} fillOpacity={1} name={labelSet ? labelSet[tokenSet.indexOf(el)]: el} stackId="a" dataKey={el} type="monotone" stroke={colorSet[tokenSet.indexOf(el)]} fill={"url(#" + colorSet[tokenSet.indexOf(el)] + ")"} strokeWidth={2} />
+                    )}
                 </AreaChart>
             </ResponsiveContainer>
             <RowBetween>
@@ -117,4 +130,4 @@ const Chart = ({
     );
 };
 
-export default Chart;
+export default StackedAreaChart;

@@ -1,50 +1,59 @@
 import OPTIMISM_LOGO_URL from '../assets/images/optimism.svg';
-import ARBITRUM_LOGO_URL from '../assets/images/arbitrum.svg';
-import ETHEREUM_LOGO_URL from '../assets/images/ethereum-logo.png';
-import { BALANCER_PRIMARY_COLOR, BALANCER_SECONDARY_COLOR } from '../data/balancer/constants';
+import FANTOM_LOGO from '../assets/images/fantom.svg';
+import { 
+    BALANCER_PRIMARY_COLOR, 
+    BALANCER_SECONDARY_COLOR, 
+    BALANCER_APP_LINK, 
+    BALANCER_APP_OP_LINK, 
+    BALANCER_SUBGRAPH_URL, 
+    BALANCER_SUBGRAPH_OP_URL,
+    BALANCER_SUBGRAPH_START_TIMESTAMP,
+    BALANCER_SUBGRAPH_START_OP_TIMESTAMP 
+} from '../data/balancer/constants';
 
 export enum SupportedNetwork {
-    ETHEREUM,
-    ARBITRUM,
+    FANTOM,
     OPTIMISM,
 }
 
 export type NetworkInfo = {
-    id: SupportedNetwork;
-    route: string;
-    name: string;
-    imageURL: string;
-    bgColor: string;
-    primaryColor: string;
-    secondaryColor: string;
-    blurb?: string;
+    id: SupportedNetwork
+    chainId: string
+    route: string
+    name: string
+    startTimeStamp: number
+    clientUri: string
+    appUri: string
+    imageURL: string
+    bgColor: string
+    primaryColor: string
+    secondaryColor: string
+    blurb?: string
 };
 
-export const EthereumNetworkInfo: NetworkInfo = {
-    id: SupportedNetwork.ETHEREUM,
+export const FantomNetworkInfo: NetworkInfo = {
+    id: SupportedNetwork.FANTOM,
+    chainId: '20250',
     route: '',
-    name: 'Ethereum',
+    name: 'Fantom',
+    startTimeStamp: BALANCER_SUBGRAPH_START_TIMESTAMP,
+    appUri: BALANCER_APP_LINK,
+    clientUri: BALANCER_SUBGRAPH_URL,
     bgColor: BALANCER_PRIMARY_COLOR,
     primaryColor: BALANCER_PRIMARY_COLOR,
     secondaryColor: BALANCER_SECONDARY_COLOR,
-    imageURL: ETHEREUM_LOGO_URL,
+    imageURL: FANTOM_LOGO,
 };
 
-export const ArbitrumNetworkInfo: NetworkInfo = {
-    id: SupportedNetwork.ARBITRUM,
-    route: 'arbitrum',
-    name: 'Arbitrum',
-    imageURL: ARBITRUM_LOGO_URL,
-    bgColor: '#0A294B',
-    primaryColor: '#0490ED',
-    secondaryColor: '#96BEDC',
-    blurb: 'L2 Beta',
-};
 
 export const OptimismNetworkInfo: NetworkInfo = {
     id: SupportedNetwork.OPTIMISM,
+    chainId: '10',
     route: 'optimism',
     name: 'OΞ (Optimism)',
+    startTimeStamp: BALANCER_SUBGRAPH_START_OP_TIMESTAMP,
+    appUri: BALANCER_APP_OP_LINK,
+    clientUri: BALANCER_SUBGRAPH_OP_URL,
     bgColor: '#F01B36',
     primaryColor: '#F01B36',
     secondaryColor: '#FB7876',
@@ -53,7 +62,6 @@ export const OptimismNetworkInfo: NetworkInfo = {
 };
 
 export const SUPPORTED_NETWORK_VERSIONS: NetworkInfo[] = [
-    EthereumNetworkInfo,
+    FantomNetworkInfo,
     OptimismNetworkInfo,
-    ArbitrumNetworkInfo,
 ];

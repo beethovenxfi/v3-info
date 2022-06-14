@@ -178,7 +178,7 @@ export default function JoinExitTable({
 
     return (
         <Wrapper>
-            <AutoColumn gap="16px">
+            <AutoColumn gap="12px">
                 <ResponsiveGrid>
                     <RowFixed></RowFixed>
                     <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.valueUSD)} end={1}>

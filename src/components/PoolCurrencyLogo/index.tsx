@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import CurrencyLogo from '../CurrencyLogo';
 import { PoolTokenData } from '../../data/balancer/balancerTypes';
 
-const Wrapper = styled.div<{ margin: boolean; sizeraw: number }>`
+const Wrapper = styled.div<{ margin: boolean; sizeraw: number , numberoftokens: number  }>`
     position: relative;
     display: flex;
     flex-direction: row;
-    margin-right: ${({ sizeraw, margin }) => margin && (sizeraw / 3 + 8).toString() + 'px'};
+    margin-right: ${({ sizeraw, margin, numberoftokens }) => margin && (sizeraw * (numberoftokens - 1 ) / 1.5 + 10).toString() + 'px'};
 `;
 
 interface PoolCurrencyLogoProps {
@@ -16,23 +16,29 @@ interface PoolCurrencyLogoProps {
     tokens: { address: string }[];
 }
 
-const HigherLogo = styled(CurrencyLogo)`
-    z-index: 2;
+const HigherLogo = styled(CurrencyLogo)<{numberoftokens: number }>`
+    z-index: 0;
 `;
-const CoveredLogo = styled(CurrencyLogo)<{ sizeraw: number }>`
-    // position: absolute;
-    // left: ${({ sizeraw }) => '-' + (sizeraw / 2).toString() + 'px'} !important;
+const CoveredLogo = styled(CurrencyLogo)<{ sizeraw: number, index: number }>`
+     position: absolute;
+     right: ${({ sizeraw, index }) => '-' + ((sizeraw*index) / 1.5).toString() + 'px'} !important;
 `;
 
-export default function PoolCurrencyLogo({ tokens, size = 16, margin = false }: PoolCurrencyLogoProps) {
+export default function PoolCurrencyLogo({ tokens, size = 20, margin = true }: PoolCurrencyLogoProps) {
     return (
-        <Wrapper sizeraw={size} margin={margin}>
+        <Wrapper numberoftokens={tokens.length} sizeraw={size} margin={margin}>
             {tokens.map((token, index) =>
                 index === 0 ? (
-                    <HigherLogo address={token.address} size={size.toString() + 'px'} key={token.address} />
+                    <HigherLogo 
+                    address={token.address} 
+                    size={size.toString() + 'px'} 
+                    key={token.address}
+                    numberoftokens={tokens.length}
+                    />
                 ) : (
                     <CoveredLogo
                         address={token.address}
+                        index={index}
                         size={size.toString() + 'px'}
                         sizeraw={size}
                         key={token.address}

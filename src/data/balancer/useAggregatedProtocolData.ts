@@ -4,7 +4,7 @@ import { BalancerSwapFragment, useGetProtocolDataLazyQuery } from '../../apollo/
 import { useEffect } from 'react';
 import { unixToDate } from '../../utils/date';
 import { BalancerChartDataItem } from './balancerTypes';
-import { useActiveNetworkVersion } from 'state/application/hooks';
+import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 
 interface ProtocolData {
     volume24?: number;
@@ -21,27 +21,29 @@ interface ProtocolData {
     whaleSwaps: BalancerSwapFragment[];
 }
 
-export function useBalancerProtocolData(): ProtocolData {
-    const [activeNetwork] = useActiveNetworkVersion();
+export function useBalancerChainProtocolData(clientUri: string, startTimestamp: number, blockClientOverride?: ApolloClient<NormalizedCacheObject>, clientOverride?: ApolloClient<NormalizedCacheObject>): ProtocolData {
     const [t24, t48, tWeek] = useDeltaTimestamps();
-    const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek]);
+    const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek], blockClientOverride);
     const [block24, block48, blockWeek] = blocks ?? [];
-    const [getProcotolData, { data }] = useGetProtocolDataLazyQuery();
+    const [getProcotolData, { data }] = useGetProtocolDataLazyQuery({client: clientOverride}
+    );
 
     useEffect(() => {
         if (block24) {
             getProcotolData({
                 variables: {
-                    startTimestamp: activeNetwork.startTimeStamp,
+                    startTimestamp: startTimestamp,
                     block24: { number: parseInt(block24.number) },
                     block48: { number: parseInt(block48.number) },
                 },
                 context: {
-                    uri: activeNetwork.clientUri,
+                    uri: clientUri,
                 },
             });
         }
     }, [block24]);
+
+    
 
     if (!data) {
         return { tvlData: [], volumeData: [], swapData: [], feeData: [], whaleSwaps: [] };

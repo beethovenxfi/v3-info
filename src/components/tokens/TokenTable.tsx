@@ -14,9 +14,7 @@ import { PageButtons, Arrow, Break } from 'components/shared';
 import HoverInlineText from '../HoverInlineText';
 import useTheme from 'hooks/useTheme';
 import { TOKEN_HIDE } from '../../constants/index';
-import { TokenListToken } from '../../state/token-lists/token-lists';
 import { TokenData } from '../../data/balancer/balancerTypes';
-
 const Wrapper = styled(DarkGreyCard)`
     width: 100%;
 `;
@@ -148,7 +146,7 @@ export default function TokenTable({
     const sortedTokens = useMemo(() => {
         return tokenDatas
             ? tokenDatas
-                  .filter((x) => !!x && !TOKEN_HIDE.includes(x.address))
+                  .filter((x) => !!x && !TOKEN_HIDE.includes(x.address) && x.volumeUSDChange > 0)
                   .sort((a, b) => {
                       if (a && b) {
                           return a[sortField as keyof TokenData] > b[sortField as keyof TokenData]
@@ -184,7 +182,7 @@ export default function TokenTable({
     return (
         <Wrapper>
             {sortedTokens.length > 0 ? (
-                <AutoColumn gap="16px">
+                <AutoColumn gap="8px">
                     <ResponsiveGrid>
                         <Label color={theme.text2}>#</Label>
                         <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.name)}>

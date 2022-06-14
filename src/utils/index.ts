@@ -5,7 +5,7 @@ import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { ChainId, Currency, CurrencyAmount, Fraction, Percent, Token } from '@uniswap/sdk-core';
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json';
-import { ArbitrumNetworkInfo, NetworkInfo } from 'constants/networks';
+import { NetworkInfo } from 'constants/networks';
 import JSBI from 'jsbi';
 import { ROUTER_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/lists/hooks';
@@ -26,9 +26,10 @@ export function getEtherscanLink(
     type: 'transaction' | 'token' | 'address' | 'block',
     networkVersion: NetworkInfo,
 ): string {
-    const prefix = 'https://ftmscan.com';
+    let prefix = 'https://ftmscan.com';
 
     if (networkVersion === OptimismNetworkInfo) {
+        prefix = 'https://optimistic.etherscan.io/'
         switch (type) {
             case 'transaction': {
                 return `${prefix}/tx/${data}`;
@@ -38,24 +39,6 @@ export function getEtherscanLink(
             }
             case 'block': {
                 return `https://optimistic.etherscan.io`;
-            }
-            case 'address':
-            default: {
-                return `${prefix}/address/${data}`;
-            }
-        }
-    }
-
-    if (networkVersion === ArbitrumNetworkInfo) {
-        switch (type) {
-            case 'transaction': {
-                return `${prefix}/tx/${data}`;
-            }
-            case 'token': {
-                return `${prefix}/address/${data}`;
-            }
-            case 'block': {
-                return 'https://arbiscan.io/';
             }
             case 'address':
             default: {

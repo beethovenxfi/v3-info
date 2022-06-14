@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { unixToDate } from '../../utils/date';
 import { BALANCER_SUBGRAPH_START_TIMESTAMP } from './constants';
 import { BalancerChartDataItem, TokenData } from './balancerTypes';
+import { useActiveNetworkVersion } from 'state/application/hooks';
 
 function getTokenValues(
     tokenAddress: string,
@@ -37,6 +38,7 @@ function getTokenPriceValues(tokenAddress: string, prices: LatestPriceFragment[]
 }
 
 export function useBalancerTokens(): TokenData[] {
+    const [activeNetwork] = useActiveNetworkVersion();
     const [t24, t48, tWeek] = useDeltaTimestamps();
     const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek]);
     const [block24, block48, blockWeek] = blocks ?? [];
@@ -49,6 +51,9 @@ export function useBalancerTokens(): TokenData[] {
                     block24: { number: parseInt(block24.number) },
                     //block48: { number: parseInt(block48.number) },
                     blockWeek: { number: parseInt(blockWeek.number) },
+                },
+                context: {
+                    uri: activeNetwork.clientUri,
                 },
             });
         }
@@ -81,7 +86,7 @@ export function useBalancerTokens(): TokenData[] {
             txCount: parseFloat(token.totalSwapCount),
             feesUSD: 0,
             tvlToken: tokenData.tvlToken,
-            tvlUSD: tokenData.tvl,
+            tvlUSD: (token.symbol?.includes('bb-yv') ? 0 : tokenData.tvl),
             tvlUSDChange: (tokenData.tvl - tokenData24.tvl) / tokenData24.tvl,
             priceUSD: priceData.price,
             priceUSDChange:
@@ -108,8 +113,12 @@ export function useBalancerTokenPageData(address: string): {
     volumeData: BalancerChartDataItem[];
     priceData: BalancerChartDataItem[];
 } {
+    const [activeNetwork] = useActiveNetworkVersion();
     const { data } = useGetTokenPageDataQuery({
-        variables: { address, startTimestamp: BALANCER_SUBGRAPH_START_TIMESTAMP },
+        variables: { address, startTimestamp: activeNetwork.startTimeStamp },
+        context: {
+            uri: activeNetwork.clientUri,
+        },
     });
     const snapshots = data?.tokenSnapshots || [];
 
