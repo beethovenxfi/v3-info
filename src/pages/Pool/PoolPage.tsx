@@ -196,7 +196,7 @@ export default function PoolPage({
                                                         {token.symbol}
                                                     </TYPE.label>
                                                 </RowFixed>
-                                                <TYPE.label fontSize="14px">{formatAmount(token.tvl)}</TYPE.label>
+                                                <TYPE.label fontSize="14px">{formatAmount(token.tvl / token.price)}</TYPE.label>
                                             </RowBetween>
                                         ))}
                                     </AutoColumn>

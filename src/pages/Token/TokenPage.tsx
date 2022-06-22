@@ -114,6 +114,16 @@ export default function TokenPage({
     // watchlist
     const [savedTokens, addSavedToken] = useSavedTokens();
 
+        //Token fee estimation -> extraction of 24h pool fees relative to token weight
+        let tokenFees = 0;
+        poolData.forEach((pool) => {
+            const token = pool.tokens.find((t) => t.address === address);
+            if (token && token.weight) {
+                tokenFees += pool.feesUSD * token?.weight;
+            }
+        })
+
+    //Candle Chart data
     const { chartData } = useBalancerToken(address);
 
     return (
@@ -233,7 +243,7 @@ export default function TokenPage({
                                     </AutoColumn>
                                     <AutoColumn gap="4px">
                                         <TYPE.main fontWeight={400}>24h Fees</TYPE.main>
-                                        <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.feesUSD)}</TYPE.label>
+                                        <TYPE.label fontSize="24px">~ {formatDollarAmount(tokenFees)}</TYPE.label>
                                     </AutoColumn>
                                 </AutoColumn>
                             </DarkGreyCard>
@@ -312,11 +322,20 @@ export default function TokenPage({
                                         setLabel={setValueLabel}
                                     />
                                 ) : view === ChartView.PRICE ? (
-                                    chartData.length > 0 ? (
+                                    chartData.length > 10 ? (
                                         <div style={{ backgroundColor: 'white', borderRadius: 8, marginTop: 8 }}>
                                             <TokenPriceChart data={chartData} height={500} width={900} ratio={1} />
                                         </div>
-                                    ) : (
+                                    ) : ( priceData.length > 0 ? (
+                                        <LineChart
+                                            data={priceData}
+                                            color={backgroundColor}
+                                            minHeight={340}
+                                            value={latestValue}
+                                            label={valueLabel}
+                                            setValue={setLatestValue}
+                                            setLabel={setValueLabel}
+                                        />) :
                                         <LocalLoader fill={false} />
                                     )
                                 ) : null}

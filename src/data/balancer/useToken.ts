@@ -23,10 +23,6 @@ export function useBalancerToken(tokenAddress: string): BalancerTokenData {
         ...(pricesData?.prices4 || []),
         ...(pricesData?.prices5 || []),
         ...(pricesData?.prices6 || []),
-        ...(pricesData?.prices7 || []),
-        ...(pricesData?.prices8 || []),
-        ...(pricesData?.prices9 || []),
-        ...(pricesData?.prices10 || []),
     ];
 
     const formatted = prices.map((price) => ({

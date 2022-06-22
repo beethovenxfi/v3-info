@@ -101,7 +101,7 @@ export default function Menu() {
                         <Info size={14} />
                         About
                     </MenuItem>
-                    <MenuItem id="link" href="https://docs.beethovenx.io/">
+                    <MenuItem id="link" href="https://docs.beets.fi/">
                         <BookOpen size={14} />
                         Docs
                     </MenuItem>

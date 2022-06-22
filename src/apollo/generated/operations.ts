@@ -495,42 +495,6 @@ export const BalancerChartTokenPrices = gql`
         ) {
             ...BalancerChartTokenPrice
         }
-        prices7: tokenPrices(
-            skip: 6000
-            first: 1000
-            orderBy: timestamp
-            orderDirection: desc
-            where: { asset: $asset }
-        ) {
-            ...BalancerChartTokenPrice
-        }
-        prices8: tokenPrices(
-            skip: 7000
-            first: 1000
-            orderBy: timestamp
-            orderDirection: desc
-            where: { asset: $asset }
-        ) {
-            ...BalancerChartTokenPrice
-        }
-        prices9: tokenPrices(
-            skip: 8000
-            first: 1000
-            orderBy: timestamp
-            orderDirection: desc
-            where: { asset: $asset }
-        ) {
-            ...BalancerChartTokenPrice
-        }
-        prices10: tokenPrices(
-            skip: 9000
-            first: 1000
-            orderBy: timestamp
-            orderDirection: desc
-            where: { asset: $asset }
-        ) {
-            ...BalancerChartTokenPrice
-        }
     }
     ${BalancerChartTokenPrice}
 `;
